@@ -37,14 +37,14 @@ function App() {
       }
     });
   }, []);
-
+  console.log(jobs);
   return (
     <div className="app-container">
       <h1 className="app-title">Job Openings</h1>
       {jobs ? (
         <Grid container spacing={2}>
           {jobs.map((job) => (
-            <Grid item key={job.jdUid} xs={12} sm={6} md={4} lg={3}>
+            <Grid item key={job.jdUid} xs={12} sm={6} md={4} lg={4} xl={3}>
               <JobCard job={job} />
             </Grid>
           ))}

@@ -1,4 +1,10 @@
-import { CardContent, Typography, Avatar, CardActionArea } from "@mui/material";
+import {
+  CardContent,
+  Typography,
+  Avatar,
+  CardActionArea,
+  Grid,
+} from "@mui/material";
 
 const JobCard = ({ job }) => {
   return (
@@ -18,29 +24,61 @@ const JobCard = ({ job }) => {
       }}
     >
       <CardContent>
-        <Typography
-          variant="h6"
-          component="div"
-          sx={{ fontWeight: "bold", marginBottom: 1 }}
+        <Grid
+          container
+          sx={{
+            display: "flex",
+            alignItems: "center",
+          }}
         >
-          {job.jobRole}
-        </Typography>
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{ marginBottom: 1 }}
-        >
-          {job.companyName} - {job.location}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {job.jobDetailsFromCompany}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Salary: {job.minJdSalary || "Not specified"} -{" "}
-          {job.maxJdSalary || "Not specified"} {job.salaryCurrencyCode}
-        </Typography>
+          <Grid item xs={3}>
+            <Avatar alt={job.companyName} src={job.logoUrl} />
+          </Grid>
+          <Grid item xs={7}>
+            <Typography variant="body2" color="text.secondary">
+              {job.companyName}
+            </Typography>
+
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{ fontWeight: "bold" }}
+            >
+              {job.jobRole}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {job.location}
+            </Typography>
+          </Grid>
+        </Grid>
+        {job.minJdSalary || job.maxJdSalary ? (
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ padding: ".5rem 0rem" }}
+          >
+            Estimated Salary : {job.minJdSalary || "0"} -{" "}
+            {job.maxJdSalary || "Not specified"} {job.salaryCurrencyCode}
+          </Typography>
+        ) : (
+          <Typography> "No Salary Details Found" </Typography>
+        )}
+        {job.jobDetailsFromCompany ? (
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{
+              maxHeight: "10rem",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            Job Description : {job.jobDetailsFromCompany}
+          </Typography>
+        ) : (
+          <Typography> "No Job Details Found" </Typography>
+        )}
       </CardContent>
-      <Avatar alt={job.companyName} src={job.logoUrl} />
     </CardActionArea>
   );
 };
