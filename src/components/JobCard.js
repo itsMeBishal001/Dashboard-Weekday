@@ -1,14 +1,35 @@
-import React from "react";
-import { Card, CardContent, Typography, Avatar } from "@mui/material";
+import { CardContent, Typography, Avatar, CardActionArea } from "@mui/material";
 
 const JobCard = ({ job }) => {
   return (
-    <Card>
+    <CardActionArea
+      disableRipple
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        padding: 2,
+        borderRadius: "4px",
+        boxShadow: 2,
+        transition: "transform 0.3s ease-in-out",
+        "&:hover": {
+          transform: "scale(1.02)",
+        },
+      }}
+    >
       <CardContent>
-        <Typography variant="h5" component="div">
+        <Typography
+          variant="h6"
+          component="div"
+          sx={{ fontWeight: "bold", marginBottom: 1 }}
+        >
           {job.jobRole}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ marginBottom: 1 }}
+        >
           {job.companyName} - {job.location}
         </Typography>
         <Typography variant="body2" color="text.secondary">
@@ -18,9 +39,9 @@ const JobCard = ({ job }) => {
           Salary: {job.minJdSalary || "Not specified"} -{" "}
           {job.maxJdSalary || "Not specified"} {job.salaryCurrencyCode}
         </Typography>
-        <Avatar alt={job.companyName} src={job.logoUrl} />
       </CardContent>
-    </Card>
+      <Avatar alt={job.companyName} src={job.logoUrl} />
+    </CardActionArea>
   );
 };
 

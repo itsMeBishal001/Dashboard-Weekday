@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import JobCard from "./components/JobCard";
+import { Grid, CircularProgress } from "@mui/material";
+import "./App.css";
 
 function App() {
   const [jobs, setJobs] = useState(null);
@@ -36,16 +38,22 @@ function App() {
     });
   }, []);
 
-  //jobs data results
-  console.log(jobs);
-
   return (
-    <div>
-      <h1>Jobs Data</h1>
+    <div className="app-container">
+      <h1 className="app-title">Job Openings</h1>
       {jobs ? (
-        jobs.map((job) => <JobCard key={job.jdUid} job={job} />)
+        <Grid container spacing={2}>
+          {jobs.map((job) => (
+            <Grid item key={job.jdUid} xs={12} sm={6} md={4} lg={3}>
+              <JobCard job={job} />
+            </Grid>
+          ))}
+        </Grid>
       ) : (
-        <p>Loading...</p>
+        <div className="loading-message">
+          <p>Loading...</p>
+          <CircularProgress color="secondary" />
+        </div>
       )}
     </div>
   );
