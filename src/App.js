@@ -29,8 +29,8 @@ function App() {
 
     // Fetch initial data
     fetchJobs().then((data) => {
-      if (data) {
-        setJobs(data);
+      if (data?.jdList) {
+        setJobs(data.jdList);
       }
     });
   }, []);
@@ -40,8 +40,30 @@ function App() {
 
   return (
     <div>
-      <h1>jobs Data</h1>
-      {jobs ? <>Jobs are fetched </> : <p>Loading...</p>}
+      <h1>Jobs Data</h1>
+      {jobs ? (
+        jobs.map((job) => (
+          <div key={job.jdUid}>
+            <h2>{job.jobRole}</h2>
+            <p>{job.companyName}</p>
+            <p>{job.location}</p>
+            <p>{job.jobDetailsFromCompany}</p>
+            <p>
+              Salary:{" "}
+              {job.minJdSalary ? `$${job.minJdSalary}` : "Not specified"} -{" "}
+              {job.maxJdSalary ? `$${job.maxJdSalary}` : "Not specified"}{" "}
+              {job.salaryCurrencyCode}
+            </p>
+            <img
+              src={job.logoUrl}
+              alt={job.companyName}
+              style={{ width: "100px", height: "100px" }}
+            />
+          </div>
+        ))
+      ) : (
+        <p>Loading...</p>
+      )}
     </div>
   );
 }
