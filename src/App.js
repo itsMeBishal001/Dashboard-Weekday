@@ -4,7 +4,8 @@ import { Grid, CircularProgress } from "@mui/material";
 import "./App.css";
 
 function App() {
-  const [jobs, setJobs] = useState(null);
+  const [jobs, setJobs] = useState([]);
+  const [offset, setOffset] = useState(0);
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -18,7 +19,7 @@ function App() {
             },
             body: JSON.stringify({
               limit: 10,
-              offset: 0,
+              offset: offset,
             }),
           }
         );
@@ -32,11 +33,34 @@ function App() {
 
     // Fetch initial data
     fetchJobs().then((data) => {
-      if (data?.jdList) {
-        setJobs(data.jdList);
+      if (data) {
+        if (offset === 0) {
+          setJobs(data?.jdList);
+        } else {
+          setJobs((prevData) => {
+            return [...prevData, ...data?.jdList];
+          });
+        }
       }
     });
+  }, [offset]);
+
+  const handleScroll = () => {
+    if (
+      window.innerHeight + window.scrollY + 10 >=
+      document.documentElement.offsetHeight
+    ) {
+      setOffset((prevOffset) => prevOffset + 10);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
+
   console.log(jobs);
   return (
     <div className="app-container">
