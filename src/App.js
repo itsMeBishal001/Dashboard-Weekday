@@ -61,7 +61,6 @@ function App() {
     };
   }, []);
 
-  console.log(jobs);
   return (
     <div className="app-container">
       <h1 className="app-title">Job Openings</h1>
