@@ -17,30 +17,29 @@ function App() {
   const [jobTypeFilter, setJobTypeFilter] = useState("");
   const [locationFilter, setLocationFilter] = useState("");
 
+  const fetchJobs = async () => {
+    try {
+      const response = await fetch(
+        "https://api.weekday.technology/adhoc/getSampleJdJSON",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            limit: 10,
+            offset: offset,
+          }),
+        }
+      );
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Fetch error:", error);
+      return null;
+    }
+  };
   useEffect(() => {
-    const fetchJobs = async () => {
-      try {
-        const response = await fetch(
-          "https://api.weekday.technology/adhoc/getSampleJdJSON",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              limit: 10,
-              offset: offset,
-            }),
-          }
-        );
-        const data = await response.json();
-        return data;
-      } catch (error) {
-        console.error("Fetch error:", error);
-        return null;
-      }
-    };
-
     // Fetch initial data
     fetchJobs().then((data) => {
       if (data) {
@@ -101,11 +100,17 @@ function App() {
     };
 
     const handleLocationChange = (event) => {
+      event.preventDefault()
       setLocationFilter(event.target.value);
     };
     const handleClearFilters = () => {
       setLocationFilter("");
       setJobTypeFilter("");
+      fetchJobs().then((data) => {
+        if (data) {
+            setJobs( data?.jdList)
+        }
+      });
     };
     return (
       <div className="filter-section">
