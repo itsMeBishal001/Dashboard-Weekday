@@ -16,18 +16,18 @@ import {
   setOffset,
   setJobTypeFilter,
   setLocationFilter,
-} from "./Store";
+} from "./jobsSlice";
 
 function App() {
   // const [jobs, setJobs] = useState([]);
-  const [offset, setOffset] = useState(0);
-  const [jobTypeFilter, setJobTypeFilter] = useState("");
-  const [locationFilter, setLocationFilter] = useState("");
+  // const [offset, setOffset] = useState(0);
+  // const [jobTypeFilter, setJobTypeFilter] = useState("");
+  // const [locationFilter, setLocationFilter] = useState("");
   const dispatch = useDispatch();
-  const jobs = useSelector((state) => state.jobs.jobs);
-  // const offset = useSelector((state) => state.offset);
-  // const jobTypeFilter = useSelector((state) => state.jobTypeFilter);
-  // const locationFilter = useSelector((state) => state.locationFilter);
+  const jobs = useSelector((state) => state.jobs);
+  const offset = useSelector((state) => state.offset);
+  const jobTypeFilter = useSelector((state) => state.jobTypeFilter);
+  const locationFilter = useSelector((state) => state.locationFilter);
 
   const fetchJobs = async () => {
     try {
@@ -40,12 +40,13 @@ function App() {
           },
           body: JSON.stringify({
             limit: 10,
-            offset,
+            offset: 0,
           }),
         }
       );
       const data = await response.json();
       if (data) {
+        console.log(data);
         dispatch(setJobs(data?.jdList)); // Dispatch action to update jobs
       }
     } catch (error) {
@@ -146,7 +147,8 @@ function App() {
       </div>
     );
   };
-
+  console.log(jobs);
+  console.log(offset);
   return (
     <div className="app-container">
       <h1 className="app-title">Job Openings</h1>
@@ -158,11 +160,11 @@ function App() {
       />
       {jobs ? (
         <Grid container spacing={2}>
-          {jobs.map((job) => (
+          {/* {jobs.map((job) => (
             <Grid item key={job.jdUid} xs={12} sm={6} md={4} lg={4} xl={3}>
               <JobCard job={job} />
             </Grid>
-          ))}
+          ))} */}
         </Grid>
       ) : (
         <div className="loading-message">
