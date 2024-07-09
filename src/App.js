@@ -10,12 +10,24 @@ import {
   Button,
 } from "@mui/material";
 import "./App.css";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  setJobs,
+  setOffset,
+  setJobTypeFilter,
+  setLocationFilter,
+} from "./jobsSlice";
 
 function App() {
-  const [jobs, setJobs] = useState([]);
-  const [offset, setOffset] = useState(0);
-  const [jobTypeFilter, setJobTypeFilter] = useState("");
-  const [locationFilter, setLocationFilter] = useState("");
+  // const [jobs, setJobs] = useState([]);
+  // const [offset, setOffset] = useState(0);
+  // const [jobTypeFilter, setJobTypeFilter] = useState("");
+  // const [locationFilter, setLocationFilter] = useState("");
+  const dispatch = useDispatch();
+  const jobs = useSelector((state) => state.jobs);
+  const offset = useSelector((state) => state.offset);
+  const jobTypeFilter = useSelector((state) => state.jobTypeFilter);
+  const locationFilter = useSelector((state) => state.locationFilter);
 
   const fetchJobs = async () => {
     try {
@@ -28,57 +40,30 @@ function App() {
           },
           body: JSON.stringify({
             limit: 10,
-            offset: offset,
+            offset: 0,
           }),
         }
       );
       const data = await response.json();
-      return data;
+      if (data) {
+        console.log(data);
+        dispatch(setJobs(data?.jdList)); // Dispatch action to update jobs
+      }
     } catch (error) {
       console.error("Fetch error:", error);
-      return null;
     }
   };
-  useEffect(() => {
-    // Fetch initial data
-    fetchJobs().then((data) => {
-      if (data) {
-        if (offset === 0) {
-          setJobs(
-            data?.jdList.filter((job) => {
-              // initial Filter logic based on jobTypeFilter and locationFilter
-              return (
-                (!jobTypeFilter ||
-                  jobTypeFilter === "All" ||
-                  job.jobRole === jobTypeFilter) &&
-                (!locationFilter || job.location.includes(locationFilter))
-              );
-            })
-          );
-        } else {
-          setJobs((prevData) => {
-            return [...prevData, ...data?.jdList].filter((job) => {
-              // Filter logic based on jobTypeFilter and locationFilter
-              return (
-                (!jobTypeFilter ||
-                  jobTypeFilter === "All" ||
-                  job.jobRole === jobTypeFilter) &&
-                (!locationFilter || job.location.includes(locationFilter))
-              );
-            });
-          });
-        }
-      }
-    });
-  }, [offset, jobTypeFilter, locationFilter]);
 
-  console.log(jobs);
+  useEffect(() => {
+    fetchJobs();
+  }, [offset]); // Fetch jobs on offset change
+
   const handleScroll = () => {
     if (
       window.innerHeight + window.scrollY + 10 >=
       document.documentElement.offsetHeight
     ) {
-      setOffset((prevOffset) => prevOffset + 10);
+      dispatch(setOffset(offset + 10)); // Dispatch action to update offset
     }
   };
 
@@ -89,33 +74,45 @@ function App() {
     };
   }, []);
 
+  const handleJobTypeChange = (event) => {
+    dispatch(setJobTypeFilter(event.target.value));
+  };
+
+  const handleLocationChange = (event) => {
+    dispatch(setLocationFilter(event.target.value));
+  };
+
+  const handleClearFilters = () => {
+    dispatch(setJobTypeFilter(""));
+    dispatch(setLocationFilter(""));
+    fetchJobs(); // Refetch all jobs on clear
+  };
   const FilterSection = ({
     jobTypeFilter,
     setJobTypeFilter,
     locationFilter,
     setLocationFilter,
   }) => {
-    const handleJobTypeChange = (event) => {
-      setJobTypeFilter(event.target.value);
-    };
+    // const handleJobTypeChange = (event) => {
+    //   setJobTypeFilter(event.target.value);
+    // };
 
-    const handleLocationChange = (event) => {
-      event.preventDefault()
-      setLocationFilter(event.target.value);
-    };
-    const handleClearFilters = () => {
-      setLocationFilter("");
-      setJobTypeFilter("");
-      fetchJobs().then((data) => {
-        if (data) {
-            setJobs( data?.jdList)
-        }
-      });
-    };
+    // const handleLocationChange = (event) => {
+    //   event.preventDefault();
+    //   setLocationFilter(event.target.value);
+    // };
+    // const handleClearFilters = () => {
+    //   setLocationFilter("");
+    //   setJobTypeFilter("");
+    //   fetchJobs().then((data) => {
+    //     if (data) {
+    //       setJobs(data?.jdList);
+    //     }
+    //   });
+    // };
     return (
       <div className="filter-section">
         <h2>Filter Jobs</h2>
-        {/* <form> */}
         <FormControl sx={{ m: 1, minWidth: 120 }}>
           <InputLabel id="job-type-label">Job Type</InputLabel>
           <Select
@@ -128,7 +125,6 @@ function App() {
             <MenuItem value="Software Engineer">Software Engineer</MenuItem>
             <MenuItem value="frontend">Frontend Devoloper</MenuItem>
             <MenuItem value="Data Scientist">Data Scientist</MenuItem>
-            {/* Add more options for different job types */}
           </Select>
         </FormControl>
 
@@ -151,7 +147,8 @@ function App() {
       </div>
     );
   };
-
+  console.log(jobs);
+  console.log(offset);
   return (
     <div className="app-container">
       <h1 className="app-title">Job Openings</h1>
@@ -163,11 +160,11 @@ function App() {
       />
       {jobs ? (
         <Grid container spacing={2}>
-          {jobs.map((job) => (
+          {/* {jobs.map((job) => (
             <Grid item key={job.jdUid} xs={12} sm={6} md={4} lg={4} xl={3}>
               <JobCard job={job} />
             </Grid>
-          ))}
+          ))} */}
         </Grid>
       ) : (
         <div className="loading-message">
