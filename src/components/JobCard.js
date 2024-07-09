@@ -7,6 +7,14 @@ import {
 } from "@mui/material";
 
 const JobCard = ({ job }) => {
+  //For looking the job position catchy capitilize first letters
+  const capitalizeWords = (str) => {
+    return str
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
+
   return (
     <CardActionArea
       disableRipple
@@ -44,7 +52,7 @@ const JobCard = ({ job }) => {
               component="div"
               sx={{ fontWeight: "bold" }}
             >
-              {job.jobRole}
+              {capitalizeWords(job.jobRole)}
             </Typography>
             <Typography variant="body2" color="text.secondary">
               {job.location}
@@ -73,7 +81,10 @@ const JobCard = ({ job }) => {
               textOverflow: "ellipsis",
             }}
           >
-            Job Description : {job.jobDetailsFromCompany}
+            <Typography sx={{ fontWeight: "bold" }}>
+              Job Description :
+            </Typography>{" "}
+            {job.jobDetailsFromCompany}
           </Typography>
         ) : (
           <Typography> "No Job Details Found" </Typography>
